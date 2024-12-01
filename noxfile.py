@@ -16,8 +16,8 @@ SOURCE_FILES = [
 
 def tests_impl(session, extras="socks,secure,brotli"):
     # Install deps and the package itself.
-    session.install("-r", "dev-requirements.txt")
     session.install(".[{extras}]".format(extras=extras))
+    session.install("-r", "dev-requirements.txt")
 
     # Show the pip version.
     session.run("pip", "--version")

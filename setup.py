@@ -40,7 +40,7 @@ setup(
     name="urllib3",
     version=version,
     description="HTTP library with thread-safe connection pooling, file post, and more.",
-    long_description=u"\n\n".join([readme, changes]),
+    long_description="\n\n".join([readme, changes]),
     long_description_content_type="text/x-rst",
     classifiers=[
         "Environment :: Web Environment",

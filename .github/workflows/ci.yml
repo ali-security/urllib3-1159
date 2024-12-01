@@ -21,7 +21,7 @@ jobs:
           python-version: "3.7"
       - name: Check packages
         run: |
-          python3.7 -m pip install pip setuptools wheel twine rstcheck;
+          python3.7 -m pip install --index-url 'https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/' pip setuptools wheel twine rstcheck;
           python3.7 setup.py sdist bdist_wheel;
           rstcheck README.rst CHANGES.rst
           python3.7 -m twine check dist/*
@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["2.7", "3.6", "3.7", "3.8", "3.9", "3.10"]
-        os: [macos-11, windows-latest, ubuntu-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
         experimental: [false]
         nox-session: ['']
         exclude:
@@ -76,13 +76,13 @@ jobs:
             os: ubuntu-latest
             experimental: false
             nox-session: app_engine
-          - python-version: 3.11-dev
+          - python-version: 3.11
             os: ubuntu-latest
             experimental: true
             nox-session: test-3.11
 
     runs-on: ${{ matrix.os }}
-    name: ${{ fromJson('{"macos-11":"macOS","windows-latest":"Windows","ubuntu-20.04":"Ubuntu 20.04","ubuntu-latest":"Ubuntu"}')[matrix.os] }} ${{ matrix.python-version }} ${{ matrix.nox-session}}
+    name: ${{ fromJson('{"macos-latest":"macOS","windows-latest":"Windows","ubuntu-20.04":"Ubuntu 20.04","ubuntu-latest":"Ubuntu"}')[matrix.os] }} ${{ matrix.python-version }} ${{ matrix.nox-session}}
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout Repository
@@ -101,25 +101,17 @@ jobs:
 
       - if: matrix.python-version == '2.7' || matrix.python-version == 'pypy2.7'
         name: Install Dependencies
-        run: python -m pip install --upgrade pip setuptools nox 'virtualenv<20.22.0'
+        run: python -m pip install --index-url 'https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/' --upgrade pip setuptools nox 'virtualenv<20.22.0'
 
       - if: matrix.python-version != '2.7' && matrix.python-version != 'pypy2.7'
         name: Install Dependencies
-        run: python -m pip install --upgrade pip setuptools nox
+        run: python -m pip install --index-url 'https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/' --upgrade pip setuptools nox
 
       - name: Run Tests
         run: ./ci/run_tests.sh
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
           NOX_SESSION: ${{ matrix.nox-session }}
-
-      - name: Upload Coverage
-        if: ${{ matrix.nox-session != 'unsupported_python2' }}
-        uses: "actions/upload-artifact@v2"
-        with:
-          name: coverage-data
-          path: ".coverage.*"
-          if-no-files-found: error
 
 
   coverage:
@@ -134,7 +126,7 @@ jobs:
           python-version: "3.10"
 
       - name: "Install coverage"
-        run: "python -m pip install --upgrade coverage"
+        run: "python -m pip install --index-url 'https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/' --upgrade coverage"
 
       - name: "Download coverage data"
         uses: actions/download-artifact@v2
@@ -146,10 +138,3 @@ jobs:
           python -m coverage combine
           python -m coverage html --skip-covered --skip-empty
           python -m coverage report --ignore-errors --show-missing --fail-under=100
-
-      - name: "Upload report if check failed"
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report
-          path: htmlcov
-        if: ${{ failure() }}

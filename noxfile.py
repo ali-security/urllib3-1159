@@ -16,8 +16,22 @@ SOURCE_FILES = [
 
 def tests_impl(session, extras="socks,secure,brotli"):
     # Install deps and the package itself.
-    session.install(".[{extras}]".format(extras=extras))
-    session.install("-r", "dev-requirements.txt")
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        ".[{extras}]".format(extras=extras),
+    )
+    session.install(
+        "--index-url",
+        "https://:2023-05-23T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "lazy-object-proxy==1.6.0",
+    )
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "-r",
+        "dev-requirements.txt",
+    )
 
     # Show the pip version.
     session.run("pip", "--version")
@@ -55,14 +69,32 @@ def google_brotli(session):
     # https://pypi.org/project/Brotli/ is the Google version of brotli, so
     # install it separately and don't install our brotli extra (which installs
     # brotlipy).
-    session.install("brotli")
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "brotli",
+    )
     tests_impl(session, extras="socks,secure")
 
 
 @nox.session(python="2.7")
 def app_engine(session):
-    session.install("-r", "dev-requirements.txt")
-    session.install(".")
+    session.install(
+        "--index-url",
+        "https://:2023-05-23T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "lazy-object-proxy==1.6.0",
+    )
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "-r",
+        "dev-requirements.txt",
+    )
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        ".",
+    )
     session.run(
         "coverage",
         "run",
@@ -92,7 +124,12 @@ def downstream_botocore(session):
     session.run("python", "scripts/ci/install")
 
     session.cd(root)
-    session.install(".", silent=False)
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        ".",
+        silent=False,
+    )
     session.cd(f"{tmp_dir}/botocore")
 
     session.run("python", "scripts/ci/run-tests")
@@ -107,11 +144,27 @@ def downstream_requests(session):
     git_clone(session, "https://github.com/psf/requests")
     session.chdir("requests")
     session.run("git", "rev-parse", "HEAD", external=True)
-    session.install(".[socks]", silent=False)
-    session.install("-r", "requirements-dev.txt", silent=False)
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        ".[socks]",
+        silent=False,
+    )
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "-r",
+        "requirements-dev.txt",
+        silent=False,
+    )
 
     session.cd(root)
-    session.install(".", silent=False)
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        ".",
+        silent=False,
+    )
     session.cd(f"{tmp_dir}/requests")
 
     session.run("pytest", "tests")
@@ -120,7 +173,11 @@ def downstream_requests(session):
 @nox.session()
 def format(session):
     """Run code formatters."""
-    session.install("pre-commit")
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "pre-commit",
+    )
     session.run("pre-commit", "--version")
 
     process = subprocess.run(
@@ -138,14 +195,27 @@ def format(session):
 
 @nox.session
 def lint(session):
-    session.install("pre-commit")
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "pre-commit",
+    )
     session.run("pre-commit", "run", "--all-files")
 
 
 @nox.session
 def docs(session):
-    session.install("-r", "docs/requirements.txt")
-    session.install(".[socks,secure,brotli]")
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "-r",
+        "docs/requirements.txt",
+    )
+    session.install(
+        "--index-url",
+        "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        ".[socks,secure,brotli]",
+    )
 
     session.chdir("docs")
     if os.path.exists("_build"):

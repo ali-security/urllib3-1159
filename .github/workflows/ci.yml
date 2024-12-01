@@ -43,6 +43,12 @@ jobs:
           # https://bugs.python.org/issue38820
           - python-version: "3.7"
             os: ubuntu-latest
+          # Python 2.7 is not available on Windows
+          - python-version: "2.7"
+            os: windows-latest
+          # Python 3.6 is not available on MacOS
+          - python-version: "3.6"
+            os: macos-latest
         include:
           - python-version: "2.7"
             os: ubuntu-20.04

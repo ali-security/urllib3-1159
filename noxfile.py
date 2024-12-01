@@ -71,6 +71,11 @@ def google_brotli(session):
     # brotlipy).
     session.install(
         "--index-url",
+        "https://:2023-05-23T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
+        "lazy-object-proxy==1.6.0",
+    )
+    session.install(
+        "--index-url",
         "https://:2023-10-02T00:00:00.000000Z@time-machines-pypi.sealsecurity.io/",
         "brotli",
     )
